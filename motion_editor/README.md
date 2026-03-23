@@ -19,6 +19,36 @@ pip install PyQt6
 
 其他依赖（mujoco, numpy等）已在GMR项目中安装。
 
+## 配置
+
+### 第一步：设置GMR路径
+
+**编辑配置文件**：`motion_editor/src/gui/config.py`
+
+找到以下代码并设置你的GMR项目路径：
+
+```python
+# GMR项目的根目录路径
+GMR_ROOT_PATH = ""  # <-- 请在这里填入你的GMR路径
+```
+
+**示例配置：**
+
+```python
+# Linux/macOS
+GMR_ROOT_PATH = "/home/username/GMR"
+
+# Windows
+GMR_ROOT_PATH = "C:/Users/username/Documents/GMR"
+
+# 或者如果你的motion_editor在GMR目录下
+GMR_ROOT_PATH = "/home/lupinjia/GMR"
+```
+
+**验证配置：**
+- 路径必须指向GMR项目的根目录（包含 `general_motion_retargeting/` 和 `assets/` 目录）
+- 配置完成后，启动时会自动验证路径是否正确
+
 ## 使用方法
 
 ### 启动编辑器

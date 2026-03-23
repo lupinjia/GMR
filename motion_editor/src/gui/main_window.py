@@ -7,11 +7,6 @@
 import os
 import sys
 
-# 添加GMR项目路径（获取motion_editor的父目录）
-_current_dir = os.path.dirname(os.path.abspath(__file__))
-_gmr_root = os.path.dirname(os.path.dirname(os.path.dirname(_current_dir)))
-sys.path.insert(0, _gmr_root)
-
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QMenuBar, QMenu, QToolBar, QStatusBar, QLabel,
@@ -25,6 +20,10 @@ from PyQt6.QtGui import QAction, QKeySequence
 from .gmr_manager import GMRDataManager
 from .motion_controller import MotionController
 from .timeline_widget import TimelineWidget
+from . import config
+
+# 设置GMR路径并导入模块
+config.setup_gmr_path()
 
 # 导入GMR项目中的机器人相关模块
 try:
@@ -35,7 +34,9 @@ try:
 except ImportError as e:
     GMR_AVAILABLE = False
     ROBOT_LIST = []
-    print(f"Warning: GMR modules not available. Some features will be disabled. Error: {e}")
+    print(f"Warning: GMR modules not available. Some features will be disabled.")
+    print(f"Please check your GMR_ROOT_PATH setting in src/gui/config.py")
+    print(f"Error: {e}")
 
 
 class MainWindow(QMainWindow):
@@ -46,6 +47,9 @@ class MainWindow(QMainWindow):
         
         self.setWindowTitle("GMR Motion Editor")
         self.setMinimumSize(800, 600)
+        
+        # 检查GMR路径配置
+        self.check_gmr_config()
         
         # 组件
         self.data_manager = GMRDataManager()
@@ -61,6 +65,18 @@ class MainWindow(QMainWindow):
         self.init_toolbar()
         self.init_statusbar()
         self.connect_signals()
+    
+    def check_gmr_config(self):
+        """检查GMR路径配置"""
+        is_valid, message = config.validate_gmr_path()
+        if not is_valid:
+            print(f"\n{'='*60}")
+            print("GMR Path Configuration Error")
+            print(f"{'='*60}")
+            print(message)
+            print(f"\nPlease edit: motion_editor/src/gui/config.py")
+            print(f"Set GMR_ROOT_PATH to your GMR installation directory")
+            print(f"{'='*60}\n")
     
     def init_ui(self):
         """初始化UI"""
