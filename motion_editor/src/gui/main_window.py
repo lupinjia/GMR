@@ -7,8 +7,10 @@
 import os
 import sys
 
-# 添加GMR项目路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# 添加GMR项目路径（获取motion_editor的父目录）
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_gmr_root = os.path.dirname(os.path.dirname(os.path.dirname(_current_dir)))
+sys.path.insert(0, _gmr_root)
 
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -27,12 +29,13 @@ from .timeline_widget import TimelineWidget
 # 导入GMR项目中的机器人相关模块
 try:
     from general_motion_retargeting import RobotMotionViewer, ROBOT_XML_DICT
-    from general_motion_retargeting.params import ROBOT_LIST
     GMR_AVAILABLE = True
-except ImportError:
+    # 从ROBOT_XML_DICT获取机器人列表
+    ROBOT_LIST = list(ROBOT_XML_DICT.keys())
+except ImportError as e:
     GMR_AVAILABLE = False
     ROBOT_LIST = []
-    print("Warning: GMR modules not available. Some features will be disabled.")
+    print(f"Warning: GMR modules not available. Some features will be disabled. Error: {e}")
 
 
 class MainWindow(QMainWindow):
