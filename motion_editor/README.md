@@ -9,56 +9,84 @@
 - **剪辑**: 简单的起止时间裁剪功能，导出选定片段
 - **多机器人支持**: 支持项目中所有17种机器人模型
 
-## 安装依赖
+## 安装与配置
 
-确保已安装PyQt6：
+### 1. 放置位置（推荐）
+
+**推荐做法**：将 `motion_editor` 文件夹放在 GMR 项目的根目录下：
+
+```
+GMR/                          # GMR项目根目录
+├── general_motion_retargeting/
+├── assets/
+├── motion_editor/            # <-- 放在这里
+│   ├── motion_editor.py
+│   ├── src/
+│   └── README.md
+└── ...
+```
+
+**优点**：
+- 自动检测 GMR 路径，无需手动配置
+- 启动时会自动找到 GMR 项目的机器人模型和数据
+
+### 2. 放置在其他位置（可选）
+
+如果你希望将 `motion_editor` 放在其他位置（例如独立的工作目录），需要手动配置 GMR 路径：
+
+**步骤**：
+
+1. **编辑配置文件**：`motion_editor/src/gui/config.py`
+
+2. **设置 GMR 路径**：
+
+```python
+# GMR项目的根目录路径
+GMR_ROOT_PATH = "/path/to/your/GMR"  # <-- 修改为你的GMR路径
+```
+
+**示例**：
+
+```python
+# Linux/macOS
+GMR_ROOT_PATH = "/home/username/Projects/GMR"
+
+# Windows
+GMR_ROOT_PATH = "C:/Users/username/Documents/GMR"
+```
+
+### 3. 安装依赖
+
+确保已安装 PyQt6：
 
 ```bash
 pip install PyQt6
 ```
 
-其他依赖（mujoco, numpy等）已在GMR项目中安装。
+其他依赖（mujoco, numpy 等）需要在 GMR 项目中预先安装。
 
-## 配置
+### 4. 验证配置
 
-### 第一步：设置GMR路径
+启动编辑器时会自动验证配置：
+- ✅ 如果配置正确，会显示 "Valid GMR installation"
+- ❌ 如果配置错误，控制台会提示错误信息和解决方案
 
-**编辑配置文件**：`motion_editor/src/gui/config.py`
-
-找到以下代码并设置你的GMR项目路径：
-
-```python
-# GMR项目的根目录路径
-GMR_ROOT_PATH = ""  # <-- 请在这里填入你的GMR路径
-```
-
-**示例配置：**
-
-```python
-# Linux/macOS
-GMR_ROOT_PATH = "/home/username/GMR"
-
-# Windows
-GMR_ROOT_PATH = "C:/Users/username/Documents/GMR"
-
-# 或者如果你的motion_editor在GMR目录下
-GMR_ROOT_PATH = "/home/lupinjia/GMR"
-```
-
-**验证配置：**
-- 路径必须指向GMR项目的根目录（包含 `general_motion_retargeting/` 和 `assets/` 目录）
-- 配置完成后，启动时会自动验证路径是否正确
+**验证要求**：
+- 路径必须指向 GMR 项目的根目录
+- 必须包含 `general_motion_retargeting/` 和 `assets/` 目录
 
 ## 使用方法
 
 ### 启动编辑器
 
 ```bash
-# 从motion_editor目录运行
+# 进入 motion_editor 目录
 cd motion_editor
+
+# 启动编辑器
 python motion_editor.py
 
-# 或带文件路径启动
+# 或带文件路径启动（自动打开指定文件）
 python motion_editor.py /path/to/motion_data.pkl
 ```
 
@@ -105,6 +133,7 @@ motion_editor/
 ├── src/                           # 源代码
 │   └── gui/                       # GUI模块
 │       ├── __init__.py
+│       ├── config.py             # GMR路径配置 ⭐
 │       ├── gmr_manager.py        # 数据管理
 │       ├── motion_controller.py  # 播放控制
 │       ├── timeline_widget.py    # 时间轴控件
@@ -114,9 +143,11 @@ motion_editor/
 │   ├── test_timeline_widget.py
 │   └── test_motion_controller.py
 ├── motion_editor.py              # 启动脚本
-├── path_config.py                # 路径配置
 └── README.md                     # 本文件
 ```
+
+**重要文件**：
+- `src/gui/config.py` - **GMR路径配置文件**，编辑此文件设置GMR项目路径
 
 ## 支持的机器人
 
