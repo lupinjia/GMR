@@ -344,17 +344,36 @@ class MainWindow(QMainWindow):
             return
         
         try:
-            clip_data = self.data_manager.clip(
-                self.timeline.clip_start,
-                self.timeline.clip_end
-            )
+            # 获取裁剪范围
+            clip_start = self.timeline.clip_start
+            clip_end = self.timeline.clip_end
+            
+            print(f"Export clip: start={clip_start}, end={clip_end}")
+            print(f"Data fps: {self.data_manager.data.get('fps', 'NOT FOUND')}")
+            print(f"Data frames: {len(self.data_manager.data.get('root_pos', []))}")
+            
+            # 获取裁剪数据
+            clip_data = self.data_manager.clip(clip_start, clip_end)
+            
+            # 验证裁剪数据
+            if clip_data is None:
+                raise ValueError("Clip data is None")
+            
+            if 'fps' not in clip_data:
+                raise ValueError("Clip data missing 'fps' field")
+            
+            # 保存裁剪数据
             self.data_manager.save(file_path, clip_data)
             
-            clip_duration = (self.timeline.clip_end - self.timeline.clip_start) / self.data_manager.data['fps']
+            # 计算时长
+            clip_duration = (clip_end - clip_start) / clip_data['fps']
             self.statusbar.showMessage(
-                f"Exported clip: {self.timeline.clip_start}-{self.timeline.clip_end} "
+                f"Exported clip: {clip_start}-{clip_end} "
                 f"({clip_duration:.2f}s) to {file_path}")
         except Exception as e:
+            import traceback
+            error_detail = f"Failed to export clip:\n{str(e)}\n\n{traceback.format_exc()}"
+            print(error_detail)  # 打印到控制台
             QMessageBox.critical(self, "Error", f"Failed to export clip:\n{str(e)}")
     
     def init_viewer(self):
