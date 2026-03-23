@@ -506,3 +506,36 @@ class MainWindow(QMainWindow):
         if self.viewer is not None:
             self.viewer.close()
         event.accept()
+    
+    def open_file_at_path(self, file_path: str):
+        """在指定路径打开文件（用于命令行参数）"""
+        if not os.path.exists(file_path):
+            QMessageBox.warning(self, "Warning", f"File not found: {file_path}")
+            return
+        
+        try:
+            self.data_manager.load(file_path)
+            self.current_file = file_path
+            
+            # 更新UI
+            meta = self.data_manager.get_metadata()
+            self.timeline.set_frame_count(meta['frame_count'])
+            self.motion_controller.set_frame_count(meta['frame_count'])
+            self.motion_controller.set_fps(meta['fps'])
+            
+            # 更新信息标签
+            info = f"File: {os.path.basename(file_path)} | "
+            info += f"Frames: {meta['frame_count']} | "
+            info += f"DOF: {meta['dof_count']} | "
+            info += f"Duration: {meta['duration']:.2f}s | "
+            info += f"FPS: {meta['fps']}"
+            self.info_label.setText(info)
+            
+            self.export_btn.setEnabled(True)
+            self.statusbar.showMessage(f"Loaded: {file_path}")
+            
+            # 初始化viewer
+            self.init_viewer()
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to load file:\n{str(e)}")
