@@ -2,6 +2,8 @@
 
 一个基于PyQt6的GMR机器人运动数据可视化编辑器，支持导入、剪辑和导出GMR格式数据。
 
+![](./docs/gmr_motion_editor_demo.gif)
+
 ## 功能特性
 
 - **导入/导出**: 支持加载和保存 `.pkl` 格式的GMR运动数据
