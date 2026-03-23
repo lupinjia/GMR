@@ -35,9 +35,20 @@ class GMRDataManager:
             'root_pos': raw_data['root_pos'],
             'root_rot': raw_data['root_rot'],  # xyzw format
             'dof_pos': raw_data['dof_pos'],
-            'local_body_pos': raw_data.get('local_body_pos'),  # 可选字段
-            'link_body_list': raw_data.get('link_body_list'),  # 可选字段
         }
+        
+        # 处理可选字段，检查是否为有效的数组
+        local_body_pos = raw_data.get('local_body_pos')
+        if local_body_pos is not None and hasattr(local_body_pos, 'shape') and len(local_body_pos.shape) >= 1:
+            self.data['local_body_pos'] = local_body_pos
+        else:
+            self.data['local_body_pos'] = None
+            
+        link_body_list = raw_data.get('link_body_list')
+        if link_body_list is not None and isinstance(link_body_list, (list, tuple)):
+            self.data['link_body_list'] = link_body_list
+        else:
+            self.data['link_body_list'] = None
         
         # 添加方便访问的帧列表
         frame_count = len(self.data['root_pos'])
