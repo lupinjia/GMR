@@ -79,7 +79,7 @@ class GMRDataManager:
             'dof_pos': data['dof_pos'],
         }
         
-        # 只添加不为None的可选字段
+        # 只添加不为None的可选字段（使用 .get() 避免 KeyError）
         if data.get('local_body_pos') is not None:
             output_data['local_body_pos'] = data['local_body_pos']
         if data.get('link_body_list') is not None:
@@ -119,12 +119,12 @@ class GMRDataManager:
         }
         
         # 处理可选字段
-        if self.data['local_body_pos'] is not None:
+        if self.data.get('local_body_pos') is not None:
             clipped_data['local_body_pos'] = self.data['local_body_pos'][start_frame:end_frame]
         else:
             clipped_data['local_body_pos'] = None
             
-        if self.data['link_body_list'] is not None:
+        if self.data.get('link_body_list') is not None:
             clipped_data['link_body_list'] = self.data['link_body_list']
         else:
             clipped_data['link_body_list'] = None
