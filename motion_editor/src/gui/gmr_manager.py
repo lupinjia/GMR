@@ -29,14 +29,14 @@ class GMRDataManager:
         with open(file_path, 'rb') as f:
             raw_data = pickle.load(f)
         
-        # 转换为标准格式
+        # 转换为标准格式（处理可选字段）
         self.data = {
             'fps': raw_data['fps'],
             'root_pos': raw_data['root_pos'],
             'root_rot': raw_data['root_rot'],  # xyzw format
             'dof_pos': raw_data['dof_pos'],
-            'local_body_pos': raw_data['local_body_pos'],
-            'link_body_list': raw_data['link_body_list'],
+            'local_body_pos': raw_data.get('local_body_pos'),  # 可选字段
+            'link_body_list': raw_data.get('link_body_list'),  # 可选字段
         }
         
         # 添加方便访问的帧列表
@@ -60,15 +60,19 @@ class GMRDataManager:
         if data is None:
             raise ValueError("No data to save")
         
-        # 创建干净的输出数据（不包含辅助字段）
+        # 创建干净的输出数据（只包含实际存在的字段）
         output_data = {
             'fps': data['fps'],
             'root_pos': data['root_pos'],
             'root_rot': data['root_rot'],
             'dof_pos': data['dof_pos'],
-            'local_body_pos': data['local_body_pos'],
-            'link_body_list': data['link_body_list'],
         }
+        
+        # 只添加不为None的可选字段
+        if data.get('local_body_pos') is not None:
+            output_data['local_body_pos'] = data['local_body_pos']
+        if data.get('link_body_list') is not None:
+            output_data['link_body_list'] = data['link_body_list']
         
         with open(file_path, 'wb') as f:
             pickle.dump(output_data, f)
@@ -94,16 +98,25 @@ class GMRDataManager:
         start_frame = max(0, start_frame)
         end_frame = min(end_frame, len(self.data['root_pos']))
         
-        # 裁剪各数组
+        # 裁剪各数组（处理可选字段）
         clipped_data = {
             'fps': self.data['fps'],
             'root_pos': self.data['root_pos'][start_frame:end_frame],
             'root_rot': self.data['root_rot'][start_frame:end_frame],
             'dof_pos': self.data['dof_pos'][start_frame:end_frame],
-            'local_body_pos': self.data['local_body_pos'][start_frame:end_frame],
-            'link_body_list': self.data['link_body_list'],
             'frames': list(range(end_frame - start_frame))
         }
+        
+        # 处理可选字段
+        if self.data['local_body_pos'] is not None:
+            clipped_data['local_body_pos'] = self.data['local_body_pos'][start_frame:end_frame]
+        else:
+            clipped_data['local_body_pos'] = None
+            
+        if self.data['link_body_list'] is not None:
+            clipped_data['link_body_list'] = self.data['link_body_list']
+        else:
+            clipped_data['link_body_list'] = None
         
         return clipped_data
     
