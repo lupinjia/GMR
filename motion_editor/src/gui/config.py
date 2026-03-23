@@ -29,7 +29,7 @@ _auto_detected_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.di
 if os.path.exists(os.path.join(_auto_detected_path, "general_motion_retargeting", "__init__.py")):
     GMR_ROOT_PATH = _auto_detected_path
 else:
-    GMR_ROOT_PATH = ""
+    GMR_ROOT_PATH = "/home/lupinjia/GMR"
 
 # ============================================================
 # 以下代码自动处理路径配置，无需修改

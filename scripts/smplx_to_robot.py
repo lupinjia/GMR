@@ -76,7 +76,7 @@ if __name__ == "__main__":
     )
     
     # align fps
-    tgt_fps = 30
+    tgt_fps = 50
     smplx_data_frames, aligned_fps = get_smplx_data_offline_fast(smplx_data, body_model, smplx_output, tgt_fps=tgt_fps)
     
    
@@ -153,6 +153,8 @@ if __name__ == "__main__":
         # save from wxyz to xyzw
         root_rot = np.array([qpos[3:7][[1,2,3,0]] for qpos in qpos_list])
         dof_pos = np.array([qpos[7:] for qpos in qpos_list])
+        print(f"length of data: {len(root_pos)}")
+        print(f"fps: {aligned_fps}")
         local_body_pos = None
         body_names = None
         
