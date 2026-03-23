@@ -13,7 +13,8 @@ __version__ = "1.0.0"
 
 __all__ = [
     'GMRDataManager',
-    'MotionController', 
+    'MotionController',
     'TimelineWidget',
     'MainWindow',
 ]
+
