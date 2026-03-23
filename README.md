@@ -32,6 +32,7 @@ This repo is licensed under the [MIT License](LICENSE).
 
 
 # News & Updates
+- **2025-03-23:** 🎉 **New!** Added [GMR Motion Editor](./motion_editor/) - A PyQt6-based GUI tool for visualizing and editing GMR motion data with clip export functionality.
 - **2026-01-21:** GMR now supports [Xsens](https://www.xsens.com/) BVH offline data.
 - **2026-01-12:** GMR now supports [Fourier GR3](https://www.fftai.com/), the 17th humanoid robot in the repo.
 - **2025-12-02:** GMR now supports [TWIST2](https://yanjieze.com/TWIST2), which utilizes [XRoboToolkit SDK](https://github.com/XR-Robotics/XRoboToolkit-PC-Service).
@@ -488,6 +489,41 @@ After launching the MuJoCo visualization window and clicking on it, you can use 
 * `[`: play the previous motion
 * `]`: play the next motion
 * `space`: toggle play/pause
+
+### GMR Motion Editor GUI
+
+We provide a user-friendly GUI tool for visualizing and editing GMR motion data.
+
+**Launch the editor:**
+```bash
+cd motion_editor
+python motion_editor.py
+```
+
+**Features:**
+- **Import/Export**: Load and save `.pkl` format GMR motion data
+- **Visualization**: Real-time robot motion rendering using MuJoCo
+- **Clip Editing**: Simple start/end time cropping with export functionality
+- **Multi-Robot Support**: Support for all 17 robot models in the project
+
+**Quick Start:**
+1. Run `python motion_editor.py`
+2. File → Open, select a `.pkl` motion data file
+3. Select the corresponding robot type from the dropdown
+4. Click the play button to view the motion
+5. Drag the blue and red handles on the timeline to set clip range
+6. Click "Export Clip" to export the cropped segment
+
+**Keyboard Shortcuts:**
+- `Space`: Play/Pause
+- `← / →`: Previous/Next frame
+- `Home`: Go to clip start
+- `End`: Go to clip end
+- `Ctrl+O`: Open file
+- `Ctrl+S`: Save file
+- `Ctrl+Shift+S`: Save As
+
+For more details, see [motion_editor/README.md](motion_editor/README.md).
 
 ## Speed Benchmark
 
