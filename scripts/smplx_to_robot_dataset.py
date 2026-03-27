@@ -68,7 +68,7 @@ def process_file(smplx_file_path, tgt_file_path, tgt_robot, SMPLX_FOLDER, tgt_fo
         return
     
   
-    tgt_fps = 30
+    tgt_fps = 50
     try:
         smplx_frame_data_list, aligned_fps = get_smplx_data_offline_fast(smplx_data, body_model, smplx_output, tgt_fps=tgt_fps)
     except Exception as e:
