@@ -4,6 +4,10 @@ import pathlib
 import os
 import multiprocessing as mp
 
+# Use 'spawn' start method for multiprocessing to avoid CUDA issues
+# 'fork' (default on Linux) causes CUDA initialization errors in child processes
+mp.set_start_method('spawn', force=True)
+
 import mujoco as mj
 import numpy as np
 from scipy.spatial.transform import Rotation as R
@@ -90,7 +94,10 @@ def process_file(smplx_file_path, tgt_file_path, tgt_robot, SMPLX_FOLDER, tgt_fo
 
     log_memory("After retargeting")
     
-    device = "cuda:0"
+    # Check if CUDA is available, fallback to CPU if not
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    if device == "cpu":
+        print(f"[WARNING] CUDA not available, using CPU for {smplx_file_path}")
     kinematics_model = KinematicsModel(retargeter.xml_file, device=device)
 
     try:
@@ -163,7 +170,8 @@ def process_file(smplx_file_path, tgt_file_path, tgt_robot, SMPLX_FOLDER, tgt_fo
         tracemalloc.stop()
         
     # clean cache
-    torch.cuda.empty_cache()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     gc.collect()
     
 
