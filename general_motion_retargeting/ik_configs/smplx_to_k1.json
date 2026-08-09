@@ -1,13 +1,13 @@
 {
     "robot_root_name": "Trunk",
-    "human_root_name": "pelvis",
-    "ground_height": 0.0,
+    "human_root_name": "spine3",
+    "ground_height": -0.05,
     "human_height_assumption": 1.8,
     "use_ik_match_table1": true,
     "use_ik_match_table2": true,
     "human_scale_table": {
         "head": 0.6,
-        "pelvis": 0.6,
+        "spine3": 0.6,
         "left_hip": 0.6,
         "right_hip": 0.6,
         "left_knee": 0.6,
@@ -85,7 +85,7 @@
             ]
         ],
         "Trunk": [
-            "pelvis",
+            "spine3",
             0,
             10,
             [
@@ -279,7 +279,7 @@
             ]
         ],
         "Trunk": [
-            "pelvis",
+            "spine3",
             10,
             5,
             [

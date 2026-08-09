@@ -40,7 +40,7 @@ This repo is licensed under the [MIT License](LICENSE).
 - **2025-11-08:** [MimicKit] from Jason Peng now supports GMR format. Check [here](https://github.com/xbpeng/MimicKit/tree/main/tools/gmr_to_mimickit).
 - **2025-10-15:** Now supporting [PAL Robotics' Talos](https://pal-robotics.com/robot/talos/), the 15th humanoid robot.
 - **2025-10-14:** GMR now supports [Nokov](https://www.nokov.com/) BVH data.
-- **2025-10-14:** Add a doc on ik config. See [DOC.md](DOC.md)
+- **2025-10-14:** Add a doc on ik config. See [ik_config.md](docs/ik_config.md)
 - **2025-10-09:** Check [TWIST](https://github.com/YanjieZe/TWIST) open-sourced code for RL motion tracking.
 - **2025-10-02:** Tech report for GMR is now on [arXiv](https://arxiv.org/abs/2510.02252).
 - **2025-10-01:** GMR now supports converting GMR pickle files to CSV (for beyondmimic), check `scripts/batch_gmr_pkl_to_csv.py`.
