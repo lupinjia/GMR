@@ -4,9 +4,11 @@ import os
 import time
 
 import numpy as np
+import torch
 
 from general_motion_retargeting import GeneralMotionRetargeting as GMR
 from general_motion_retargeting import RobotMotionViewer
+from general_motion_retargeting.kinematics_model import KinematicsModel
 from general_motion_retargeting.utils.smpl import load_smplx_file, get_smplx_data_offline_fast
 
 from rich import print
@@ -155,9 +157,22 @@ if __name__ == "__main__":
         dof_pos = np.array([qpos[7:] for qpos in qpos_list])
         print(f"length of data: {len(root_pos)}")
         print(f"fps: {aligned_fps}")
-        local_body_pos = None
-        body_names = None
-        
+
+        # Compute local body positions and link body list via forward kinematics
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        if device == "cpu":
+            print(f"[WARNING] CUDA not available, using CPU for forward kinematics")
+        kinematics_model = KinematicsModel(retarget.xml_file, device=device)
+        num_frames = root_pos.shape[0]
+        fk_root_pos = torch.zeros((num_frames, 3), device=device)
+        fk_root_rot = torch.zeros((num_frames, 4), device=device)
+        fk_root_rot[:, -1] = 1.0
+        local_body_pos, _ = kinematics_model.forward_kinematics(
+            fk_root_pos, fk_root_rot, torch.from_numpy(dof_pos).to(device=device, dtype=torch.float)
+        )
+        local_body_pos = local_body_pos.detach().cpu().numpy()
+        body_names = kinematics_model.body_names
+
         motion_data = {
             "fps": aligned_fps,
             "root_pos": root_pos,
