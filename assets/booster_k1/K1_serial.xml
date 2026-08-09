@@ -65,15 +65,20 @@
           <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="Left_Arm_2"/>
           <geom size="0.035 0.034" pos="-0.007 0 0" quat="0.707105 0 0.707108 0" type="cylinder" rgba="0.75294 0.75294 0.75294 1" group="3"/>
           <body name="Left_Arm_3" pos="0 0.044428 0">
-            <inertial pos="-0.0003979 0.072617 -0.00066218" quat="0.679502 0.689551 0.177403 -0.176989" mass="0.76208" diaginertia="0.00606947 0.00606767 0.000385851"/>
-            <joint name="Left_Elbow_Pitch" pos="0 0 0" axis="0 1 0" range="-2.27 2.27" armature="0.05"/>
-            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="Left_Arm_3"/>
-            <geom type="mesh" rgba="0.75294 0.75294 0.75294 1" mesh="Left_Arm_3" group="3"/>
-            <body name="left_hand_link" pos="0 0.1215 0">
-              <inertial pos="-0.0015751 0.084637 0.0087033" quat="0.712106 0.700961 0.0264125 -0.0293496" mass="0.16796" diaginertia="0.00205619 0.00202933 8.1482e-05"/>
-              <joint name="Left_Elbow_Yaw" pos="0 0 0" axis="0 0 1" range="-2.44 0"/>
-              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="Left_Arm_4"/>
-              <geom type="mesh" rgba="0.75294 0.75294 0.75294 1" mesh="Left_Arm_4" group="3"/>
+            <inertial pos="-0.0003979 0.072617 -0.00066218" quat="0.679502 0.689551 0.177403 -0.176989" mass="0.8" diaginertia="0.00606947 0.00606767 0.000385851"/>
+            <joint name="Left_Elbow_Pitch" pos="0 0 0" axis="0 1 0" range="-2.27 2.27" armature="0.001"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.2 1" mesh="Left_Arm_3"/>
+            <geom name="Left_Arm3_collision_1" size="0.03 0.045" pos="0 0.04 0" euler="1.57 0 0" type="cylinder" group="3"/>
+            <geom name="Left_Arm3_collision_2" size="0.03 0.025" pos="0 0.12 -0.005" type="cylinder" group="3"/>
+            <body name="Left_Arm_4" pos="0 0.1215 0">
+              <inertial pos="-0.0015751 0.084637 0.0087033" quat="0.712106 0.700961 0.0264125 -0.0293496" mass="0.19" diaginertia="0.00205619 0.00202933 8.1482e-05"/>
+              <joint name="Left_Elbow_Yaw" pos="0 0 0" axis="0 0 1" range="-2.44 0" armature="0.001"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.2 1" mesh="Left_Arm_4"/>
+              <geom name="Left_Arm4_collision" size="0.02 0.065" pos="0 0.11 0" euler="1.57 0 0" type="cylinder" group="3"/>
+              <body name="Left_Hand_link" pos="0 0.2 0">
+                <geom name="Left_Hand_collision" size="0.027" pos="0 0 0" type="sphere" group="3"/>
+                <site name="left_grasp_site" pos="0 0 0" size="0.005" rgba="1 0 0 1" group="3"/>
+              </body>
             </body>
           </body>
         </body>
@@ -88,15 +93,20 @@
           <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="Right_Arm_2"/>
           <geom size="0.035 0.034" pos="-0.007 0 0" quat="0.707105 0 0.707108 0" type="cylinder" rgba="0.75294 0.75294 0.75294 1" group="3"/>
           <body name="Right_Arm_3" pos="0 -0.044428 0">
-            <inertial pos="-0.00039919 -0.072601 -0.00065629" quat="0.689551 0.679502 0.176989 -0.177403" mass="0.76234" diaginertia="0.00607047 0.00606867 0.000386851"/>
-            <joint name="Right_Elbow_Pitch" pos="0 0 0" axis="0 1 0" range="-2.27 2.27" armature="0.05"/>
-            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="Right_Arm_3"/>
-            <geom type="mesh" rgba="0.75294 0.75294 0.75294 1" mesh="Right_Arm_3" group="3"/>
-            <body name="right_hand_link" pos="0 -0.1215 0">
-              <inertial pos="-0.0015177 -0.084536 0.0086733" quat="0.700925 0.712091 0.0296562 -0.0274245" mass="0.16828" diaginertia="0.00205618 0.00203032 8.14943e-05"/>
-              <joint name="Right_Elbow_Yaw" pos="0 0 0" axis="0 0 1" range="0 2.44"/>
-              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="Right_Arm_4"/>
-              <geom type="mesh" rgba="0.75294 0.75294 0.75294 1" mesh="Right_Arm_4" group="3"/>
+            <inertial pos="-0.00039919 -0.072601 -0.00065629" quat="0.689551 0.679502 0.176989 -0.177403" mass="0.8" diaginertia="0.00607047 0.00606867 0.000386851"/>
+            <joint name="Right_Elbow_Pitch" pos="0 0 0" axis="0 1 0" range="-2.27 2.27" armature="0.001"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.2 1" mesh="Right_Arm_3"/>
+            <geom name="Right_Arm3_collision_1" size="0.03 0.045" pos="0 -0.04 0" euler="1.57 0 0" type="cylinder" group="3"/>
+            <geom name="Right_Arm3_collision_2" size="0.03 0.025" pos="0 -0.12 -0.005" type="cylinder" group="3"/>
+            <body name="Right_Arm_4" pos="0 -0.1215 0">
+              <inertial pos="-0.0015177 -0.084536 0.0086733" quat="0.700925 0.712091 0.0296562 -0.0274245" mass="0.19" diaginertia="0.00205618 0.00203032 8.14943e-05"/>
+              <joint name="Right_Elbow_Yaw" pos="0 0 0" axis="0 0 1" range="0 2.44" armature="0.001"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.2 1" mesh="Right_Arm_4"/>
+              <geom name="Right_Arm4_collision" size="0.02 0.065" pos="0 -0.11 0" euler="1.57 0 0" type="cylinder" group="3"/>
+              <body name="Right_Hand_link" pos="0 -0.2 0">
+                <geom name="Right_Hand_collision" size="0.027" pos="0 0 0" type="sphere" group="3"/>
+                <site name="right_grasp_site" pos="0 0 0" size="0.005" rgba="1 0 0 1" group="3"/>
+              </body>
             </body>
           </body>
         </body>

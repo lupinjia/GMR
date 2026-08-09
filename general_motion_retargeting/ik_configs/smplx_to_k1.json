@@ -100,7 +100,7 @@
                 0.5
             ]
         ],
-        "left_hand_link": [
+        "Left_Hand_link": [
             "left_elbow",
             0,
             10,
@@ -116,7 +116,7 @@
                 0.5
             ]
         ],
-        "right_hand_link": [
+        "Right_Hand_link": [
             "right_elbow",
             0,
             10,
@@ -294,7 +294,7 @@
                 0.5
             ]
         ],
-        "left_hand_link": [
+        "Left_Hand_link": [
             "left_elbow",
             10,
             5,
@@ -310,7 +310,7 @@
                 0.5
             ]
         ],
-        "right_hand_link": [
+        "Right_Hand_link": [
             "right_elbow",
             10,
             5,
