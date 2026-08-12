@@ -164,27 +164,42 @@ if __name__ == "__main__":
             print(f"[WARNING] CUDA not available, using CPU for forward kinematics")
         kinematics_model = KinematicsModel(retarget.xml_file, device=device)
         num_frames = root_pos.shape[0]
+        dof_pos_tensor = torch.from_numpy(dof_pos).to(device=device, dtype=torch.float)
+
+        # Base frame (zero root): local body positions and rotations
         fk_root_pos = torch.zeros((num_frames, 3), device=device)
         fk_root_rot = torch.zeros((num_frames, 4), device=device)
         fk_root_rot[:, -1] = 1.0
-        local_body_pos, _ = kinematics_model.forward_kinematics(
-            fk_root_pos, fk_root_rot, torch.from_numpy(dof_pos).to(device=device, dtype=torch.float)
+        body_pos_b, body_rot_b = kinematics_model.forward_kinematics(
+            fk_root_pos, fk_root_rot, dof_pos_tensor
         )
-        local_body_pos = local_body_pos.detach().cpu().numpy()
+        body_pos_b = body_pos_b.detach().cpu().numpy()
+        body_rot_b = body_rot_b.detach().cpu().numpy()
         body_names = kinematics_model.body_names
+
+        # World frame (actual root): body positions and rotations
+        body_pos_w, body_rot_w = kinematics_model.forward_kinematics(
+            torch.from_numpy(root_pos).to(device=device, dtype=torch.float),
+            torch.from_numpy(root_rot).to(device=device, dtype=torch.float),
+            dof_pos_tensor,
+        )
+        body_pos_w = body_pos_w.detach().cpu().numpy()
+        body_rot_w = body_rot_w.detach().cpu().numpy()
 
         motion_data = {
             "fps": aligned_fps,
             "root_pos": root_pos,
             "root_rot": root_rot,
             "dof_pos": dof_pos,
-            "local_body_pos": local_body_pos,
             "link_body_list": body_names,
+            "body_pos_b": body_pos_b,
+            "body_pos_w": body_pos_w,
+            "body_rot_w": body_rot_w,
+            "body_rot_b": body_rot_b,
         }
         with open(args.save_path, "wb") as f:
             pickle.dump(motion_data, f)
         print(f"Saved to {args.save_path}")
             
       
-    
     robot_motion_viewer.close()

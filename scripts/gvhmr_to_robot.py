@@ -4,9 +4,11 @@ import os
 import time
 
 import numpy as np
+import torch
 
 from general_motion_retargeting import GeneralMotionRetargeting as GMR
 from general_motion_retargeting import RobotMotionViewer
+from general_motion_retargeting.kinematics_model import KinematicsModel
 from general_motion_retargeting.utils.smpl import load_gvhmr_pred_file, get_gvhmr_data_offline_fast
 
 from rich import print
@@ -149,16 +151,47 @@ if __name__ == "__main__":
         # save from wxyz to xyzw
         root_rot = np.array([qpos[3:7][[1,2,3,0]] for qpos in qpos_list])
         dof_pos = np.array([qpos[7:] for qpos in qpos_list])
-        local_body_pos = None
-        body_names = None
-        
+        print(f"length of data: {len(root_pos)}")
+        print(f"fps: {aligned_fps}")
+
+        # Compute local body positions and link body list via forward kinematics
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        if device == "cpu":
+            print(f"[WARNING] CUDA not available, using CPU for forward kinematics")
+        kinematics_model = KinematicsModel(retarget.xml_file, device=device)
+        num_frames = root_pos.shape[0]
+        dof_pos_tensor = torch.from_numpy(dof_pos).to(device=device, dtype=torch.float)
+
+        # Base frame (zero root): body positions and rotations
+        fk_root_pos = torch.zeros((num_frames, 3), device=device)
+        fk_root_rot = torch.zeros((num_frames, 4), device=device)
+        fk_root_rot[:, -1] = 1.0
+        body_pos_b, body_rot_b = kinematics_model.forward_kinematics(
+            fk_root_pos, fk_root_rot, dof_pos_tensor
+        )
+        body_pos_b = body_pos_b.detach().cpu().numpy()
+        body_rot_b = body_rot_b.detach().cpu().numpy()
+        body_names = kinematics_model.body_names
+
+        # World frame (actual root): body positions and rotations
+        body_pos_w, body_rot_w = kinematics_model.forward_kinematics(
+            torch.from_numpy(root_pos).to(device=device, dtype=torch.float),
+            torch.from_numpy(root_rot).to(device=device, dtype=torch.float),
+            dof_pos_tensor,
+        )
+        body_pos_w = body_pos_w.detach().cpu().numpy()
+        body_rot_w = body_rot_w.detach().cpu().numpy()
+
         motion_data = {
             "fps": aligned_fps,
             "root_pos": root_pos,
             "root_rot": root_rot,
             "dof_pos": dof_pos,
-            "local_body_pos": local_body_pos,
             "link_body_list": body_names,
+            "body_pos_b": body_pos_b,
+            "body_pos_w": body_pos_w,
+            "body_rot_w": body_rot_w,
+            "body_rot_b": body_rot_b,
         }
         with open(args.save_path, "wb") as f:
             pickle.dump(motion_data, f)

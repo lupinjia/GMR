@@ -114,7 +114,7 @@ def process_file(smplx_file_path, tgt_file_path, tgt_robot, SMPLX_FOLDER, tgt_fo
     fk_root_rot = torch.zeros((num_frames, 4), device=device)
     fk_root_rot[:, -1] = 1.0
 
-    local_body_pos, _ = kinematics_model.forward_kinematics(
+    body_pos_b, body_rot_b = kinematics_model.forward_kinematics(
         fk_root_pos, fk_root_rot, torch.from_numpy(dof_pos).to(device=device, dtype=torch.float)
     )
 
@@ -136,15 +136,24 @@ def process_file(smplx_file_path, tgt_file_path, tgt_robot, SMPLX_FOLDER, tgt_fo
     if ROOT_ORIGIN_OFFSET:
         # offset using the first frame
         root_pos[:, :2] -= root_pos[0, :2]
-        
-        
+
+    # World frame FK with the final adjusted root
+    body_pos_w, body_rot_w = kinematics_model.forward_kinematics(
+        torch.from_numpy(root_pos).to(device=device, dtype=torch.float),
+        torch.from_numpy(root_rot).to(device=device, dtype=torch.float),
+        torch.from_numpy(dof_pos).to(device=device, dtype=torch.float),
+    )
+
     motion_data = {
         "fps": aligned_fps,
         "root_pos": root_pos,
         "root_rot": root_rot,
         "dof_pos": dof_pos,
-        "local_body_pos": local_body_pos.detach().cpu().numpy(),
         "link_body_list": body_names,
+        "body_pos_b": body_pos_b.detach().cpu().numpy(),
+        "body_pos_w": body_pos_w.detach().cpu().numpy(),
+        "body_rot_w": body_rot_w.detach().cpu().numpy(),
+        "body_rot_b": body_rot_b.detach().cpu().numpy(),
     }
 
 
