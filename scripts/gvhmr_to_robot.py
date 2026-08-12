@@ -73,8 +73,8 @@ if __name__ == "__main__":
         args.gvhmr_pred_file, SMPLX_FOLDER
     )
     
-    # align fps
-    tgt_fps = 30
+    # align fps, 与smplx重定向的帧率一致
+    tgt_fps = 60
     smplx_data_frames, aligned_fps = get_gvhmr_data_offline_fast(smplx_data, body_model, smplx_output, tgt_fps=tgt_fps)
     
     
