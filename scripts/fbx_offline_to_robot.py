@@ -41,8 +41,15 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "--robot",
-        choices=["unitree_g1", "booster_t1", "stanford_toddy", "fourier_n1", "engineai_pm01"],
+        choices=["unitree_g1", "booster_t1", "stanford_toddy", "fourier_n1", "engineai_pm01", "booster_k1"],
         default="unitree_g1",
+    )
+
+    parser.add_argument(
+        "--src_human",
+        choices=["fbx_offline", "fbx_mixamo"],
+        default="fbx_offline",
+        help="Source human format: 'fbx_offline' for OptiTrack, 'fbx_mixamo' for Mixamo (default: fbx_offline).",
     )
         
     parser.add_argument(
@@ -68,7 +75,14 @@ if __name__ == "__main__":
         default=None,
         help="Path to save the robot motion.",
     )
-    
+
+    parser.add_argument(
+        "--fps",
+        type=int,
+        default=120,
+        help="FPS of the input motion file (default: 120).",
+    )
+
     
     args = parser.parse_args()
     
@@ -88,7 +102,7 @@ if __name__ == "__main__":
     
     # Initialize the retargeting system with fbx configuration
     retargeter = GMR(
-        src_human="fbx_offline",  # Use the new fbx configuration
+        src_human=args.src_human,
         tgt_robot=args.robot,
         actual_human_height=1.8,
     )
@@ -96,7 +110,7 @@ if __name__ == "__main__":
     height_offset = offset_to_ground(retargeter, data_frames)
     retargeter.set_ground_offset(height_offset)
 
-    motion_fps = 120
+    motion_fps = args.fps
     
     robot_motion_viewer = RobotMotionViewer(robot_type=args.robot,
                                             motion_fps=motion_fps,

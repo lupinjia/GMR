@@ -97,8 +97,8 @@ def fbx_to_npy(file_name_in, root_joint_name, fps):
 
         # Fbx has a unique time object which you need
         #fbx_time = root_curve.KeyGetTime(frame)
-        for joint in joint_list:
-            arr = np.array(_recursive_to_list(joint.EvaluateLocalTransform(fbx_time)))
+        for joint_index, joint in enumerate(joint_list):
+            arr = np.array(_recursive_to_list(joint.EvaluateGlobalTransform(fbx_time)))
             scales = np.array(_recursive_to_list(joint.EvaluateLocalScaling(fbx_time)))
             if not np.allclose(scales[0:3], scales[0]):
                 raise ValueError(
@@ -110,7 +110,16 @@ def fbx_to_npy(file_name_in, root_joint_name, fps):
             # Adjust the array for scaling
             arr /= scales[0]
             arr[3, 3] = 1.0
-            transforms_current_frame.append(arr)
+            # EvaluateGlobalTransform returns a column-major matrix (translation on the
+            # last row in row-major view). Transpose to row-major for the relative
+            # transform below, then transpose back to keep the same layout as the
+            # original EvaluateLocalTransform output (poselib's from_fbx transposes again).
+            arr = arr.T
+            if joint_index > 0:
+                parent_matrix = np.array(_recursive_to_list(joint_list[parents[joint_index]].EvaluateGlobalTransform(fbx_time)))
+                parent_matrix = parent_matrix.T
+                arr = np.linalg.inv(parent_matrix) @ arr
+            transforms_current_frame.append(arr.T)
         local_transforms.append(transforms_current_frame)
 
         time_sec += (1.0/fbx_fps)
@@ -141,7 +150,7 @@ def _get_frame_count(fbx_scene):
     anim_range = anim_stack.GetLocalTimeSpan()
     duration = anim_range.GetDuration()
     fps = duration.GetFrameRate(duration.GetGlobalTimeMode())
-    frame_count = duration.GetFrameCount(True)
+    frame_count = duration.GetFrameCount(duration.GetGlobalTimeMode())
 
     return anim_range, frame_count, fps
 

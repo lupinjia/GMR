@@ -70,6 +70,11 @@ IK_CONFIG_DICT = {
     },
     "fbx_offline":{
         "unitree_g1": IK_CONFIG_ROOT / "fbx_offline_to_g1.json",
+        "booster_k1": IK_CONFIG_ROOT / "fbx_offline_to_k1.json",
+    },
+    "fbx_mixamo":{
+        "unitree_g1": IK_CONFIG_ROOT / "fbx_offline_mixamo_to_g1.json",
+        "booster_k1": IK_CONFIG_ROOT / "fbx_offline_mixamo_to_k1.json",
     },
     
     "xrobot":{
